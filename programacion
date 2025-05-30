@@ -1,1 +1,123 @@
-# TareaFinal
+MAIN:from sistema import Sistema
+
+def menu():
+    sistema = Sistema()
+    while True:
+        print("\n1. Agregar Grado")
+        print("2. Inscribir Alumno")
+        print("3. Ver Alumnos por Grado")
+        print("4. Salir")
+
+        opcion = input("Seleccione una opción: ")
+
+        if opcion == '1':
+            codigo = input("Ingrese código de grado: ")
+            nombre = input("Ingrese nombre del grado: ")
+            sistema.agregar_grado(codigo, nombre)
+
+        elif opcion == '2':
+            apellidos = input("Ingrese Apellidos: ")
+            nombres = input("Ingrese Nombre: ")
+            sistema.inscribir_alumno(apellidos, nombres)
+
+        elif opcion == '3':
+            sistema.mostrar_alumnos_por_grado()
+
+        elif opcion == '4':
+            print("Saliendo del programa...")
+            break
+
+        else:
+            print("Opción no válida. Intente de nuevo.")
+
+if _name_ == "_main_":
+    menu()
+
+
+ALUMNO:class Alumno:
+    def _init_(self, apellidos, nombres):
+        self.apellidos = apellidos
+        self.nombres = nombres
+
+    def _str_(self):
+        return f"{self.apellidos} {self.nombres}"
+
+
+
+GRADO:from grado import Grado
+from alumno import Alumno
+
+class Sistema:
+    def _init_(self):
+        self.grados = {}
+
+    def agregar_grado(self, codigo, nombre):
+        if codigo not in self.grados:
+            self.grados[codigo] = Grado(codigo, nombre)
+            print("...se agregó el grado exitosamente")
+        else:
+            print("...el código del grado ya existe")
+
+    def inscribir_alumno(self, apellidos, nombres):
+        if not self.grados:
+            print("No hay grados disponibles.")
+            return
+
+        print("...Seleccione el grado en el que inscribirá al alumno:")
+        for grado in self.grados.values():
+            print(grado)
+
+        codigo = input("Ingrese el código del grado: ")
+        if codigo in self.grados:
+            alumno = Alumno(apellidos, nombres)
+            if self.grados[codigo].agregar_alumno(alumno):
+                print("...Alumno inscrito exitosamente")
+            else:
+                print("...El grado ya tiene 3 alumnos inscritos")
+        else:
+            print("...Código de grado inválido")
+
+    def mostrar_alumnos_por_grado(self):
+        for grado in self.grados.values():
+            print(f"{grado}\n{'-'*60}")
+            for alumno in grado.mostrar_alumnos():
+                print(alumno)
+            print()
+
+
+
+SISTEMA:from grado import Grado
+from alumno import Alumno
+
+class Sistema:
+    def _init_(self):
+        self.grados = []
+
+    def agregar_grado(self, codigo, nombre):
+        for grado in self.grados:
+            if grado.codigo == codigo:
+                print("Ya existe un grado con ese código.")
+                return
+        nuevo_grado = Grado(codigo, nombre)
+        self.grados.append(nuevo_grado)
+        print(" Se agregó el grado exitosamente.")
+
+    def inscribir_alumno(self, apellidos, nombres, codigo_grado):
+        for grado in self.grados:
+            if grado.codigo == codigo_grado:
+                if len(grado.alumnos) < 3:
+                    alumno = Alumno(apellidos, nombres)
+                    grado.alumnos.append(alumno)
+                    print(" Alumno inscrito exitosamente.")
+                else:
+                    print(" Este grado ya tiene 3 alumnos.")
+                return
+        print("No se encontró el grado.")
+
+    def mostrar_alumnos_por_grado(self):
+        for grado in self.grados:
+            print(f"{grado.codigo} {grado.nombre}")
+            print("-" * 60)
+            for alumno in grado.alumnos:
+                print(f"{alumno.apellidos} {alumno.nombres}")
+            print()
